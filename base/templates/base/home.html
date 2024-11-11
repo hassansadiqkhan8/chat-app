@@ -1,0 +1,12 @@
+{% extends "main.html" %}
+{% block content %}
+
+<h1>Welcome to the chat app *{{request.user.username}}*</h1>
+
+<h3>New Conversation</h3>
+
+{% for chat in conversations %}
+    <a href="{% url "chat" chat.id %}">{{chat}}</a>
+{% endfor %}
+
+{% endblock %}

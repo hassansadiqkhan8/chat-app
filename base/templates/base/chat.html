@@ -1,0 +1,22 @@
+{% extends "main.html" %}
+{% block content %}
+
+{% comment %} {{conversation}} {% endcomment %}
+
+{% for message in messages %}
+    {{message.content}}
+    <br>
+
+{% endfor %}
+
+<form action="" method="post">
+    {% csrf_token %}
+
+    <input type="text" name="content">
+    <button type="submit">send</button>
+
+</form>
+<a href="{% url "home" %}">Go back</a>
+
+
+{% endblock %}

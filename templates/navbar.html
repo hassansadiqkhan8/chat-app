@@ -1,0 +1,23 @@
+
+<nav class="navbar navbar-expand-lg navbar-light custom-navbar" style="background-color: #A5B68D;">
+    <div class="container-fluid">
+      <!-- Left Side: Home Link -->
+      <a class="navbar-brand" href="{% url 'home' %}">Home</a>
+  
+      <!-- Toggler for Mobile View -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+  
+      <!-- Right Side: Login/Logout -->
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
