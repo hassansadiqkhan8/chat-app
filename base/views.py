@@ -86,5 +86,49 @@ def chat_details(request, pk):
     return render(request, "base/chat.html", {"conversation": conversation, "messages": messages})
 
 
+@login_required(login_url="login")
+def user_list(request):
+    users = User.objects.exclude(id=request.user.id)
+
+    # Get existing conversation partners
+    existing_conversations = Conversation.objects.filter(
+        Q(user1=request.user) | Q(user2=request.user)
+    )
+
+    conversation_lookup = {}
+
+    for conv in existing_conversations:
+        if request.user == conv.user1:
+            conversation_lookup[conv.user2.id] = conv.id
+        else:
+            conversation_lookup[conv.user1.id] = conv.id
+    
+    return render(request, "base/user_list.html", {"users":users, "conversation_lookup": conversation_lookup})
+
+
+@login_required(login_url="login")
+def start_conversation(request, user_id):
+    other_user = get_object_or_404(User, id=user_id)
+
+    if other_user == request.user:
+        return redirect("chat")
+    
+    # checking if conversation already exist between these users
+    conversation = Conversation.objects.filter(
+        (Q(user1=request.user) & Q(user2=other_user)) | 
+        (Q(user1=other_user) & Q(user2=request.user))
+    ).first()
+
+    # if conversation is not exist, create a new one
+    if not conversation:
+        conversation = Conversation.objects.create(
+            user1 = request.user,
+            user2 = other_user
+        )
+
+    return redirect("chat", conversation_id=conversation)
+
+
+
 def new_chat(request):
     return render(request, "base/new_chat.html", {})
