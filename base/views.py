@@ -27,6 +27,7 @@ def user_registration(request):
         return render(request, "base/registration_page.html",{"form":form})
 
 
+
 def user_login(request):
     if request.user.is_authenticated:
         return redirect("home")
@@ -46,9 +47,11 @@ def user_login(request):
         return render(request, "base/login_page.html")
 
 
+
 def user_logout(request):
     logout(request)
     return redirect("login")
+
 
 
 @login_required(login_url="login")
@@ -95,15 +98,19 @@ def user_list(request):
         Q(user1=request.user) | Q(user2=request.user)
     )
 
-    conversation_lookup = {}
+    user_data = []
 
-    for conv in existing_conversations:
-        if request.user == conv.user1:
-            conversation_lookup[conv.user2.id] = conv.id
-        else:
-            conversation_lookup[conv.user1.id] = conv.id
+    for user in users:
+        conversation = Conversation.objects.filter(
+            Q(user1=user, user2=request.user) | Q(user1=request.user, user2=user)
+        ).first()
+
+        user_data.append({
+            "user":user,
+            "conversation_id":conversation.id if conversation else None
+        })
     
-    return render(request, "base/user_list.html", {"users":users, "conversation_lookup": conversation_lookup})
+    return render(request, "base/user_list.html", {"users":users, "user_data": user_data})
 
 
 @login_required(login_url="login")
@@ -126,9 +133,5 @@ def start_conversation(request, user_id):
             user2 = other_user
         )
 
-    return redirect("chat", conversation_id=conversation)
+    return redirect("chat", pk=conversation.id)
 
-
-
-def new_chat(request):
-    return render(request, "base/new_chat.html", {})

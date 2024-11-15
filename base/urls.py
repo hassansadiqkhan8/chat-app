@@ -10,7 +10,8 @@ urlpatterns = [
     path("", views.home, name="home"),
 
     path("chat/<str:pk>/", views.chat_details, name="chat"),
-    path("new-chat/", views.new_chat, name="new-chat"),
 
     path("user-list/", views.user_list, name="user-list"),
+
+    path("start-conversation/<int:user_id>", views.start_conversation, name="start-conversation"),
 ]

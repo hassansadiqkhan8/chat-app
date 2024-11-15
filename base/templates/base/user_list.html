@@ -6,12 +6,14 @@
     <br>
 {% endfor %} {% endcomment %}
 
-{% for user in users %}
-    {% if user.id in conversation_lookup %}
-        <a href="{% url "chat" conversation_lookup|get_item:user.id %}">continue chat</a>
+{% for data in user_data %}
+    <span>{{data.user.username}}</span>
+    {% if data.conversation_id %}
+        <a href="{% url "chat" data.conversation_id %}">continue chat</a>
     {% else %}
-        <a href="{% url "new-conversation" user.id %}">start chat</a>
+        <a href="{% url "start-conversation" data.user.id %}">start chat</a>
     {% endif %}
+    <br>
 
 {% endfor %}
 
